@@ -12,16 +12,23 @@ body {
 }
 
 .floating {
+    float: left;
     padding: 4px;
     margin: 2px
 }
 
 .control-group {
-    display: inline-block;
+    display: block;
     min-width: 148px;
     max-width: 300px;
-    float: left;
+    /* float: left; */
+    padding: 4px;
+    margin: 2px;
 }
+.control-group.control-group {
+    padding-left: 1em;
+}
+
 button {
     font-size: 9pt;
     border: none;
@@ -93,7 +100,23 @@ button:active, select:indeterminate, .activeButton {
     color: #DCEDC8;
 }
 
-h6 {
+fieldset#settings {
+    display: block;
+    float: left;
+    clear: left;
+    margin: 4px;
+}
+
+fieldset#settings>legend {
     font-size: 9pt;
-    margin: 0 0 4px 0;
+    /* margin: 0 0 4px 0; */
+    font-weight: bold;
+}
+
+fieldset#settings>legend:hover {
+    cursor: pointer;
+}
+
+fieldset#settings .control-group {
+    display: none;
 }

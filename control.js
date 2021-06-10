@@ -17,6 +17,8 @@ var autoSplitLongLines = true;
 var maxCharacters = 60;
 var minWords = 3;
 
+var showSettings=false;
+
 openlpChannel.onmessage = function (ev) {
     var data = JSON.parse(ev.data);
     var type = data.type;
@@ -29,7 +31,7 @@ openlpChannel.onmessage = function (ev) {
         openlpChannel.postMessage(JSON.stringify({type: "font", value: $("#lyrics-font-size-spinner").val()}));
         openlpChannel.postMessage(JSON.stringify({type: "superscriptedVerseNumbers", value: $("#superscripted-verse-numbers-checkbox").prop("checked")}));
     } else if (type === "lyrics") {
-
+        
         lastDisplayedIndex = -1;
 
         if (autoSplitLongLines) {
@@ -65,7 +67,7 @@ function splitLines(text) {
 
     if (text === undefined)
         return "";
-
+    
     var words = text.split(" ");
     var lines = Array();
     var line_words = Array();
@@ -74,7 +76,7 @@ function splitLines(text) {
     // Create the lines of words within the character constraint
     for (var i = 0; i < words.length; i++) {
         new_word = Array(words[i]);
-
+        
         // Add at least one word per line; otherwise no more words than allowed by maxCharactersr
         if (line_words.length > 1 && line_words.concat(new_word).join(" ").length > maxCharacters) {
             lines.push(line_words);
@@ -170,7 +172,15 @@ function displaySaved(index) {
     $("#slide-text").html(pastPreviews[index]);
     historyIndex = index;
 }
-
+function showHideSettings() {
+    if (showSettings) {
+        $("#settings .control-group").show();
+        $("#settings>legend>span.direction").html('-');
+    } else {
+        $("#settings .control-group").hide();
+        $("#settings>legend>span.direction").html('+');
+    }
+}
 function updateFontSize(font) {
     $("*").css({"font-size": font + "pt"});
 }
@@ -207,6 +217,11 @@ function loadSettings() {
     var loadedDisplayAll = window.localStorage.getItem("displayAll");
     if (loadedDisplayAll !== null) {
         $("#display-all-checkbox").prop("checked", loadedDisplayAll === "true");
+    }
+    var loadedShowSettings = window.localStorage.getItem("showSettings");
+    if (loadedShowSettings !== null) {
+        showSettings = ( loadedShowSettings === "true");
+        showHideSettings();
     }
     var loadedControlFont = window.localStorage.getItem("controlFont");
     if (loadedControlFont !== null) {
@@ -362,5 +377,10 @@ $(function () {
             hiding = false;
         }
         openlpChannel.postMessage(JSON.stringify({type: "hide", value: hiding}));
+    });
+    $("#settings>legend").click(function () {
+        showSettings=!showSettings;
+        window.localStorage.setItem("showSettings",showSettings);
+        showHideSettings();
     });
 });
